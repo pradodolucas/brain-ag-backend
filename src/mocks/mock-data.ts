@@ -26,7 +26,7 @@ export const producers: Producer[] = [
     id: 4,
     name: 'Agropecuária Nordeste ME',
     taxId: '44555666000177', // CNPJ válido
-    active: false,
+    active: true,
   } as Producer,
   {
     id: 5,
@@ -147,37 +147,7 @@ export const farms: Farm[] = [
     producerId: 3,
   } as Farm,
 
-  // Agropecuária Nordeste (3 fazendas)
-  {
-    id: 11,
-    name: 'Fazenda Nordestina',
-    state: 'BA',
-    city: 'Juazeiro',
-    totalArea: 1500,
-    cultivableArea: 1000,
-    vegetationArea: 500,
-    producerId: 4,
-  } as Farm,
-  {
-    id: 12,
-    name: 'Sítio Cachoeira',
-    state: 'PE',
-    city: 'Petrolina',
-    totalArea: 400,
-    cultivableArea: 280,
-    vegetationArea: 120,
-    producerId: 4,
-  } as Farm,
-  {
-    id: 13,
-    name: 'Fazenda São Francisco',
-    state: 'PI',
-    city: 'Bom Jesus',
-    totalArea: 1100,
-    cultivableArea: 750,
-    vegetationArea: 350,
-    producerId: 4,
-  } as Farm,
+  // Removidas as fazendas da Agropecuária Nordeste pois o produtor está inativo
 
   // Carlos Oliveira (4 fazendas)
   {

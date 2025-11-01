@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateCropDto } from './dto/create-crop.dto';
@@ -13,17 +13,45 @@ export class CropService {
   ) {}
 
   async create(createCropDto: CreateCropDto): Promise<Crop> {
-    const crop = this.cropRepository.create(createCropDto as any);
-    const saved = await this.cropRepository.save(crop as any);
-    return saved as any;
+    // Verificar se a fazenda existe e pertence a um produtor ativo
+    const farm = await this.cropRepository.manager
+      .createQueryBuilder('farm', 'f')
+      .innerJoinAndSelect('f.producer', 'p')
+      .where('f.id = :farmId', { farmId: createCropDto.farmId })
+      .andWhere('p.active = :active', { active: true })
+      .getOne();
+
+    if (!farm) {
+      throw new NotFoundException(`Farm with ID ${createCropDto.farmId} not found or belongs to inactive producer`);
+    }
+
+    const crop = this.cropRepository.create(createCropDto);
+    return await this.cropRepository.save(crop);
   }
 
   async findAll(): Promise<Crop[]> {
-    return this.cropRepository.find({ relations: ['farm'] });
+    return this.cropRepository
+      .createQueryBuilder('crop')
+      .innerJoinAndSelect('crop.farm', 'farm')
+      .innerJoinAndSelect('farm.producer', 'producer')
+      .where('producer.active = :active', { active: true })
+      .getMany();
   }
 
-  async findOne(id: number): Promise<Crop | null> {
-    return this.cropRepository.findOne({ where: { id }, relations: ['farm'] });
+  async findOne(id: number): Promise<Crop> {
+    const crop = await this.cropRepository
+      .createQueryBuilder('crop')
+      .innerJoinAndSelect('crop.farm', 'farm')
+      .innerJoinAndSelect('farm.producer', 'producer')
+      .where('crop.id = :id', { id })
+      .andWhere('producer.active = :active', { active: true })
+      .getOne();
+
+    if (!crop) {
+      throw new NotFoundException(`Crop with ID ${id} not found or belongs to inactive producer`);
+    }
+
+    return crop;
   }
 
   async getRecentCrops(years: number): Promise<Crop[]> {
@@ -32,16 +60,38 @@ export class CropService {
 
     return this.cropRepository
       .createQueryBuilder('crop')
+      .leftJoinAndSelect('crop.farm', 'farm')
+      .leftJoinAndSelect('farm.producer', 'producer')
       .where('crop.year >= :minYear', { minYear })
+      .andWhere('producer.active = :active', { active: true })
       .orderBy('crop.year', 'DESC')
       .getMany();
+  } 
+
+  async update(id: number, updateCropDto: UpdateCropDto): Promise<Crop> {
+    const crop = await this.findOne(id);
+    
+    if (updateCropDto.farmId) {
+      // Se está alterando a fazenda, verificar se a nova fazenda existe e pertence a produtor ativo
+      const newFarm = await this.cropRepository.manager
+        .createQueryBuilder('farm', 'f')
+        .innerJoinAndSelect('f.producer', 'p')
+        .where('f.id = :farmId', { farmId: updateCropDto.farmId })
+        .andWhere('p.active = :active', { active: true })
+        .getOne();
+
+      if (!newFarm) {
+        throw new NotFoundException(`Farm with ID ${updateCropDto.farmId} not found or belongs to inactive producer`);
+      }
+    }
+
+    const updateResult = await this.cropRepository.save({ id, ...updateCropDto });
+    return await this.findOne(id);
   }
 
-  async update(id: number, updateCropDto: UpdateCropDto) {
-    return this.cropRepository.update(id, updateCropDto as any);
-  }
-
-  async remove(id: number) {
-    return this.cropRepository.delete(id);
+  async remove(id: number): Promise<void> {
+    // Verificar se a cultura existe e pertence a uma fazenda de produtor ativo
+    await this.findOne(id);
+    await this.cropRepository.delete(id);
   }
 }
