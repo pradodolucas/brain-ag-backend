@@ -14,7 +14,7 @@ async function createDataSource() {
     port: parseInt(process.env.DB_PORT || '5432', 10),
     username: process.env.DB_USER || 'postgres',
     password: process.env.DB_PASS || 'postgres',
-    database: process.env.DB_NAME || 'postgres',
+    database: process.env.DB_NAME || 'farm_db',
     entities: [Producer, Farm, Crop],
     // Em ambiente de desenvolvimento, sincronizamos o schema para criar tabelas automaticamente.
     // NÃO habilitar em produção.
@@ -55,6 +55,7 @@ async function run() {
     console.log('Inserindo culturas...');
     for (const c of mocks.crops) {
       const farm = await farmRepo.findOneBy({ id: (c as any).farmId });
+      if (!farm) continue;
       const cropToSave: any = { ...c, farm };
       await cropRepo.save(cropToSave);
     }

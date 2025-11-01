@@ -107,7 +107,7 @@ docker-compose up --build
 
 Observações sobre Docker:
 - Os contêineres incluem:
-  - API NestJS (node:18-slim)
+  - API NestJS (node:20-slim)
   - PostgreSQL 14
 - Volumes persistentes para o banco de dados
 - Rede isolada (farm-network)
