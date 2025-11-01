@@ -1,4 +1,4 @@
-# Brain Ag - Backend
+# Brain Agriculture - Backend
 
 > Backend para gerenciamento de Produtores, Fazendas e Culturas — construído com NestJS + TypeORM.
 
@@ -112,46 +112,3 @@ Testes e2e (exemplo Producer usando sqlite in-memory):
 ```bash
 npm run test:e2e
 ```
-
-Observações:
-- O projeto configurou `--runInBand` nas execuções de teste para evitar problemas de autodetecção de workers em alguns ambientes.
-- Há mocks reutilizáveis em `src/mocks/mock-data.ts`.
-
----
-
-## Dados mock / seeds
-Arquivo disponível: `src/mocks/mock-data.ts`.
-Ele exporta objetos e arrays:
-- `sampleProducer`, `sampleFarm`, `sampleCrop`
-- `producers`, `farms`, `crops`
-
-Posso adicionar um script `scripts/seed.ts` que injete esses mocks em um banco Postgres local via TypeORM caso queira popular um ambiente de desenvolvimento.
-
----
-
-## Boas práticas e recomendações para produção
-- Não use `synchronize: true` em produção. Use migrations.
-- Ative `ValidationPipe` global e adicione `class-validator` aos DTOs para reforçar validação de entrada.
-- Proteja credenciais com variáveis de ambiente e secrets manager.
-
----
-
-## Próximos passos recomendados
-- Criar migrations e remover `synchronize: true`.
-- Habilitar validação global (ValidationPipe) e decorar DTOs com `class-validator`.
-- Adicionar testes e2e para `Farm` e `Crop`.
-- Criar script de seed para popular bancos de dev com `src/mocks/mock-data.ts`.
-
----
-
-## Como posso ajudar agora
-Escolha uma ação e eu executo:
-1. Ajustar `package.json` para que `npm test` rode toda a suíte automaticamente.
-2. Criar um `scripts/seed.ts` que use `src/mocks/mock-data.ts` para popular um Postgres local.
-3. Habilitar ValidationPipe global e adicionar validações básicas nos DTOs.
-4. Criar testes e2e adicionais para Farm e Crop.
-
-
----
-
-README gerado automaticamente por ajuda de pair programming — me diga se deseja que eu commite o arquivo, altere o tom, ou adicione seções específicas (ex.: API docs com exemplos request/response).
