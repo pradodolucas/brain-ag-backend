@@ -1,0 +1,11 @@
+### insert
+POST http://localhost:3001/farm
+Content-Type: application/json
+
+{
+  "taxId": "12345678910",
+  "namae": "Usuário Teste"
+}
+
+### get
+GET http://localhost:3001/producer
