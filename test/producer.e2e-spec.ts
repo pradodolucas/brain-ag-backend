@@ -3,9 +3,11 @@ import { INestApplication } from '@nestjs/common';
 import request from 'supertest';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Producer } from '../src/producer/entities/producer.entity';
+import { Farm } from '../src/farm/entities/farm.entity';
+import { Crop } from '../src/crop/entities/crop.entity';
 import { ProducerModule } from '../src/producer/producer.module';
 
-describe('Producer (e2e) - sqlite in-memory', () => {
+describe('Produtor (e2e) - sqlite em memória', () => {
 	let app: INestApplication;
 
 	beforeAll(async () => {
@@ -14,8 +16,10 @@ describe('Producer (e2e) - sqlite in-memory', () => {
 				TypeOrmModule.forRoot({
 					type: 'sqlite',
 					database: ':memory:',
-					entities: [Producer],
+					entities: [Producer, Farm, Crop],
 					synchronize: true,
+					// avoid logging noise during tests
+					logging: false,
 				}),
 				ProducerModule,
 			],
@@ -29,7 +33,7 @@ describe('Producer (e2e) - sqlite in-memory', () => {
 		await app.close();
 	});
 
-	it('should create a producer and then retrieve it', async () => {
+	it('deve criar um produtor e depois recuperá-lo', async () => {
 		const createRes = await request(app.getHttpServer())
 			.post('/producer')
 			.send({ name: 'E2E Producer', taxId: '00099988877766' })
