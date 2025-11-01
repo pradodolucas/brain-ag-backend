@@ -89,13 +89,30 @@ npm run build
 npm run start:prod
 ```
 
-- Usando Docker (dev):
+## Docker
 
+O projeto inclui configurações Docker para desenvolvimento e produção:
+
+### Desenvolvimento
+Para rodar em modo desenvolvimento com hot-reload:
 ```bash
-npm run docker:dev
-# ou
 docker-compose -f docker-compose.dev.yml up --build
 ```
+
+### Produção
+Para rodar em modo produção:
+```bash
+docker-compose up --build
+```
+
+Observações sobre Docker:
+- Os contêineres incluem:
+  - API NestJS (node:18-slim)
+  - PostgreSQL 14
+- Volumes persistentes para o banco de dados
+- Rede isolada (farm-network)
+- Variáveis de ambiente já configuradas
+- Hot-reload no modo desenvolvimento
 
 ---
 
@@ -112,3 +129,31 @@ Testes e2e (exemplo Producer usando sqlite in-memory):
 ```bash
 npm run test:e2e
 ```
+
+---
+
+## Dados mock / seed
+O projeto inclui um script de seed que insere (ou atualiza) dados mock em um banco Postgres de desenvolvimento usando os mocks em `src/mocks/mock-data.ts`.
+
+- Script npm disponível:
+
+```bash
+npm run seed
+```
+
+- Comando com variáveis de ambiente (exemplo):
+
+```bash
+export DB_HOST=localhost
+export DB_PORT=5432
+export DB_USER=postgres
+export DB_PASS=postgres
+export DB_NAME=farm_db
+npm run seed
+```
+
+Observações importantes:
+- Este script NÃO limpa as tabelas; ele apenas insere/atualiza os registros a partir dos mocks. Ele foi projetado para ambientes de desenvolvimento/experimentação onde você quer preservar outros dados.
+- O script usa `synchronize: true` no DataSource apenas para conveniência em dev (cria tabelas automaticamente se não existirem). Não use isso em produção.
+- Use com cautela — especialmente se apontar para um banco com dados reais.
+

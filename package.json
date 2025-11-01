@@ -20,7 +20,8 @@
     "test:e2e": "jest --runInBand --config ./test/jest-e2e.json test/producer.e2e-spec.ts",
     "docker:build": "docker build -t farm-backend .",
     "docker:dev": "docker-compose -f docker-compose.dev.yml up --build",
-    "docker:prod": "docker-compose up --build"
+    "docker:prod": "docker-compose up --build",
+    "seed": "ts-node -r tsconfig-paths/register scripts/seed.ts"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.1",
