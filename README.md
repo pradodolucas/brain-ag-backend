@@ -152,7 +152,7 @@ export DB_NAME=farm_db
 npm run seed
 ```
 
-Importantes:
+Importante:
 - Este script NÃO limpa as tabelas; ele apenas insere/atualiza os registros a partir dos mocks. Ele foi projetado para ambientes de desenvolvimento/experimentação onde você quer preservar outros dados.
 - O script usa `synchronize: true` no DataSource apenas para conveniência em dev (cria tabelas automaticamente se não existirem). Não use isso em produção.
 - Use com cautela — especialmente se apontar para um banco com dados reais.
