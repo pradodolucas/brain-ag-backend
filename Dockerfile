@@ -1,13 +1,25 @@
-FROM node:20-alpine
 
+FROM node:20-alpine AS builder
 WORKDIR /app
 
 COPY package*.json ./
 
-RUN npm ci --no-audit --no-fund
+RUN npm ci
 
 COPY . .
+RUN npm run build
 
-EXPOSE 3000
+FROM node:20-alpine AS production
+WORKDIR /app
 
-CMD ["npm", "run", "dev"]
+ENV NODE_ENV=production
+
+COPY package*.json ./
+
+RUN npm ci --production
+
+COPY --from=builder /app/dist ./dist
+
+EXPOSE 3001
+
+CMD ["npm", "run", "start:prod"]

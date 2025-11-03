@@ -152,8 +152,25 @@ export DB_NAME=farm_db
 npm run seed
 ```
 
-Observações importantes:
+Importantes:
 - Este script NÃO limpa as tabelas; ele apenas insere/atualiza os registros a partir dos mocks. Ele foi projetado para ambientes de desenvolvimento/experimentação onde você quer preservar outros dados.
 - O script usa `synchronize: true` no DataSource apenas para conveniência em dev (cria tabelas automaticamente se não existirem). Não use isso em produção.
 - Use com cautela — especialmente se apontar para um banco com dados reais.
 
+### Observações
+
+Adorei desenvolver este projeto, foram três dias intensos de muito desenvolvimento.
+
+No backend, não consegui implementar todas as funcionalidades que gostaria. Inicialmente, por conta do prazo, adotei a estratégia de desenvolver uma API REST funcional e usei muito tempo em features para o frontend. Inclusive, deixei passar a implementação da documentação via OpenAPI.
+
+Este projeto não reflete completamente todos os meus conhecimentos em backend, entendo que um sistema em produção exige camadas adicionais e implementações mais robustas. 
+
+Principais pontos para evolução:
+
+- Implementação de validações customizadas para documentos (CPF/CNPJ)
+- Padronização dos objetos de retorno
+- Tratamento adicional de erros (exceptions)
+- Criação de uma entidade para padronizar as culturas
+- Adoção de cache (Redis) para otimizar consultas frequentes
+
+Muito obrigado pela oportunidade!
